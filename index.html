@@ -816,6 +816,41 @@ body {
 }
 .bw-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 
+/* County demographics snapshot (real Census data) */
+.county-snap {
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dotted var(--rule-soft);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.county-snap .cs-name {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.county-snap .cs-stats { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.county-snap strong {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.county-snap .cs-src {
+  margin-left: auto;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 /* --- Sparkline widget --- */
 .sparkline-card {
   width: 100%;
@@ -1807,17 +1842,17 @@ footer {
       <h3 class="feature-title">Follow the <em>money</em>, in real time.</h3>
       <div class="feature-viz">
         <div style="width: 100%;">
-          <div class="bw-title">Cash on Hand <span class="sample-tag">Sample</span></div>
+          <div class="bw-title">National Party Committees <span class="sample-tag">FEC · 2026</span></div>
           <div class="money-widget">
             <div class="money-card dem">
               <div class="mc-label">Dem · Cash on Hand</div>
-              <div class="mc-value">$412M</div>
-              <div class="mc-sub">+18% QoQ</div>
+              <div class="mc-value js-fin-dem-coh">$127M</div>
+              <div class="mc-sub">Raised <span class="js-fin-dem-raised">$508M</span></div>
             </div>
             <div class="money-card rep">
               <div class="mc-label">Rep · Cash on Hand</div>
-              <div class="mc-value">$389M</div>
-              <div class="mc-sub">+12% QoQ</div>
+              <div class="mc-value js-fin-rep-coh">$256M</div>
+              <div class="mc-sub">Raised <span class="js-fin-rep-raised">$586M</span></div>
             </div>
           </div>
         </div>
@@ -1889,24 +1924,34 @@ footer {
       <span class="feature-kicker">History</span>
       <h3 class="feature-title">Every election, <em>since 1788.</em></h3>
       <div class="feature-viz">
-        <div style="width: 100%; display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px;">
-          <!-- Mini historical election bars -->
-          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1976"></div>
-          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1980"></div>
-          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1984"></div>
-          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1988"></div>
-          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1992"></div>
-          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1996"></div>
-          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2000"></div>
-          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2004"></div>
-          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2008"></div>
-          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2012"></div>
-          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2016"></div>
-          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2020"></div>
-          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2024"></div>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; width: 100%; margin-top: 8px; font-family: var(--mono); font-size: 8px; color: var(--muted); text-align: center;">
-          <span>'76</span><span>'80</span><span>'84</span><span>'88</span><span>'92</span><span>'96</span><span>'00</span><span>'04</span><span>'08</span><span>'12</span><span>'16</span><span>'20</span><span>'24</span>
+        <div style="width: 100%;">
+          <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px;">
+            <!-- Mini historical election bars -->
+            <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1976"></div>
+            <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1980"></div>
+            <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1984"></div>
+            <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1988"></div>
+            <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1992"></div>
+            <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1996"></div>
+            <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2000"></div>
+            <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2004"></div>
+            <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2008"></div>
+            <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2012"></div>
+            <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2016"></div>
+            <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2020"></div>
+            <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2024"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; width: 100%; margin-top: 8px; font-family: var(--mono); font-size: 8px; color: var(--muted); text-align: center;">
+            <span>'76</span><span>'80</span><span>'84</span><span>'88</span><span>'92</span><span>'96</span><span>'00</span><span>'04</span><span>'08</span><span>'12</span><span>'16</span><span>'20</span><span>'24</span>
+          </div>
+          <div class="county-snap">
+            <span class="cs-name js-demo-name">Maricopa County, AZ</span>
+            <span class="cs-stats">
+              <span><strong class="js-demo-pop">4.67M</strong> people</span>
+              <span>median income <strong class="js-demo-income">$90,967</strong></span>
+            </span>
+            <span class="cs-src js-demo-src">Census · ACS 2024</span>
+          </div>
         </div>
       </div>
       <p class="feature-body">Every U.S. presidential election from 1788 to 2024 — drillable to the state and, for 2000–2024, the county level, with Census Bureau demographics for every county you open. (Recent cycles shown above.)</p>
@@ -2293,7 +2338,27 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     return { line, fill, last: pts[pts.length - 1] };
   }
 
-  function render(a) {
+  const money = n => Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(1)}B` : `$${Math.round(n / 1e6)}M`;
+  const popM = n => n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : Number(n).toLocaleString();
+  const dollars0 = n => `$${Math.round(n).toLocaleString()}`;
+
+  function renderFinance(f) {
+    if (!f || !f.dem || !f.rep) return;
+    setText(".js-fin-dem-coh", money(f.dem.cashOnHand));
+    setText(".js-fin-rep-coh", money(f.rep.cashOnHand));
+    setText(".js-fin-dem-raised", money(f.dem.receipts));
+    setText(".js-fin-rep-raised", money(f.rep.receipts));
+  }
+
+  function renderDemographics(dm) {
+    if (!dm) return;
+    setText(".js-demo-name", dm.county.replace(/,\s*Arizona$/, ", AZ"));
+    setText(".js-demo-pop", popM(dm.population));
+    if (dm.medianHouseholdIncome) setText(".js-demo-income", dollars0(dm.medianHouseholdIncome));
+    setText(".js-demo-src", `Census · ${dm.dataset} ${dm.asOf}`);
+  }
+
+  function renderApproval(a) {
     const downDelta = a.delta30 <= 0;
     setText(".js-approve", a.approve + "%");
     setText(".js-disapprove", a.disapprove + "%");
@@ -2332,10 +2397,26 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     set("phone-disapprove-dot", "cy", dp.last[1]);
   }
 
-  render(FALLBACK);
+  const FALLBACK_FINANCE = {
+    dem: { cashOnHand: 126706030.78, receipts: 507578211.92 },
+    rep: { cashOnHand: 256143261.73, receipts: 586221392.12 }
+  };
+  const FALLBACK_DEMO = {
+    county: "Maricopa County, Arizona", population: 4673096,
+    medianHouseholdIncome: 90967, dataset: "ACS 1-year", asOf: "2024"
+  };
+
+  renderApproval(FALLBACK);
+  renderFinance(FALLBACK_FINANCE);
+  renderDemographics(FALLBACK_DEMO);
   fetch("data/polls.json", { cache: "no-cache" })
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
-    .then(d => { if (d && d.approval) render(d.approval); })
+    .then(d => {
+      if (!d) return;
+      if (d.approval) renderApproval(d.approval);
+      if (d.finance) renderFinance(d.finance);
+      if (d.demographics) renderDemographics(d.demographics);
+    })
     .catch(() => { /* keep fallback */ });
 })();
 
