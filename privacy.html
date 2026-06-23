@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Ballotics</title>
+<meta name="description" content="How Ballotics handles your data: no accounts, no ads, no selling of personal information. The full privacy policy for the Ballotics app and website.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0e0d0b">
+<link rel="canonical" href="https://ballotics.com/privacy.html">
+<link rel="icon" type="image/svg+xml" href="ballotics-icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ink: #0e0d0b;
+  --ink-2: #1a1815;
+  --paper: #f3ede1;
+  --cream: #f7f1e5;
+  --rule: #2a2723;
+  --rule-soft: rgba(14, 13, 11, 0.12);
+  --muted: #6b6459;
+  --crimson: #b33333;
+  --crimson-deep: #861f1f;
+  --serif: "Fraunces", "Times New Roman", serif;
+  --sans: "Inter", -apple-system, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--ink); color: var(--paper); }
+
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: rgba(243, 237, 225, 0.92);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.wordmark-logo { display: inline-flex; align-items: center; line-height: 0; text-decoration: none; }
+.wordmark-logo img { height: 30px; width: auto; display: block; transition: opacity 0.2s ease; }
+.wordmark-logo:hover img { opacity: 0.78; }
+.back-link {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--rule);
+  padding: 8px 16px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+.back-link:hover { background: var(--ink); color: var(--paper); }
+
+.doc {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 72px 32px 96px;
+}
+
+.doc-kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.doc-kicker::before { content: ""; width: 28px; height: 1px; background: var(--crimson); }
+
+h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(40px, 6vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+}
+.effective {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 28px;
+  margin-bottom: 36px;
+  border-bottom: 3px double var(--rule);
+}
+
+.lede {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin-bottom: 40px;
+}
+
+h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  margin: 44px 0 14px;
+}
+h2 .sec {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--crimson);
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+p { font-size: 16px; color: var(--ink-2); margin-bottom: 16px; }
+ul.points { list-style: none; margin: 0 0 16px; }
+ul.points li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+ul.points li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 11px;
+  width: 6px; height: 6px;
+  background: var(--crimson);
+  border-radius: 50%;
+}
+a.inline { color: var(--crimson-deep); text-decoration: underline; text-underline-offset: 2px; }
+a.inline:hover { color: var(--crimson); }
+
+footer {
+  border-top: 1px solid var(--rule);
+  padding: 40px 32px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+footer a { color: var(--ink-2); text-decoration: none; }
+footer a:hover { color: var(--crimson); }
+
+@media (max-width: 640px) {
+  .masthead { padding: 12px 20px; }
+  .doc { padding: 48px 20px 72px; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <a href="index.html" class="wordmark-logo" aria-label="Ballotics — home">
+    <img src="ballotics-logo.svg" alt="Ballotics" width="370" height="187">
+  </a>
+  <a href="index.html" class="back-link">← Back to home</a>
+</header>
+
+<main class="doc">
+  <div class="doc-kicker">Legal · Privacy</div>
+  <h1>Privacy Policy</h1>
+  <div class="effective">Effective June 23, 2026</div>
+
+  <p class="lede">
+    Ballotics makes a free iOS app and this website that present U.S. political data — polling
+    averages, electoral maps, campaign finance, election history, and congressional information.
+    We built Ballotics to be useful without being invasive. This policy explains what we collect,
+    what we don't, and why.
+  </p>
+
+  <h2><span class="sec">§ 01</span>The short version</h2>
+  <ul class="points">
+    <li>No account is required to use Ballotics.</li>
+    <li>We don't sell or rent your personal information.</li>
+    <li>We don't run third-party ads, and we don't embed advertising or tracking SDKs.</li>
+    <li>Ballotics is built around public data from established third parties.</li>
+    <li>We collect as little as possible.</li>
+  </ul>
+
+  <h2><span class="sec">§ 02</span>Information you provide</h2>
+  <p>
+    Ballotics has no sign-up and no user profiles. If you use features that look up your elected
+    officials, you may provide your state, district, or address. That information is used only to
+    identify your representatives and the maps relevant to you — never to build an advertising
+    profile, and never sold to anyone.
+  </p>
+
+  <h2><span class="sec">§ 03</span>Information collected automatically</h2>
+  <p>
+    <strong>Website.</strong> This site (ballotics.com) is hosted on GitHub Pages. Like most web
+    hosts, GitHub may log technical information such as your IP address and browser type to
+    operate and secure the service; see the
+    <a class="inline" href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub Privacy Statement</a>.
+    We do not set advertising cookies or run third-party analytics on this site.
+  </p>
+  <p>
+    <strong>App.</strong> We do not embed third-party advertising or tracking SDKs in the app.
+    If you download Ballotics from the App Store, Apple may provide us with aggregate, anonymized
+    statistics (such as download counts and crash reports) through App Store Connect. Apple's
+    handling of that data is governed by
+    <a class="inline" href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple's Privacy Policy</a>.
+  </p>
+
+  <h2><span class="sec">§ 04</span>How data reaches Ballotics</h2>
+  <p>
+    To show current information, Ballotics requests public data from third-party sources, including
+    The New York Times (polling, under CC BY 4.0), the Federal Election Commission, the U.S. Census
+    Bureau, the U.S. Congress (Congress.gov), the MIT Election Data &amp; Science Lab, and Harvard
+    Dataverse. When your device requests data from these sources, your IP address is necessarily
+    visible to them, as with any internet request. Their use of that information is governed by
+    their own privacy policies.
+  </p>
+
+  <h2><span class="sec">§ 05</span>What we don't do</h2>
+  <ul class="points">
+    <li>We don't sell or rent personal information.</li>
+    <li>We don't show third-party ads.</li>
+    <li>We don't require you to create an account.</li>
+    <li>We don't knowingly collect personal information from children under 13.</li>
+  </ul>
+
+  <h2><span class="sec">§ 06</span>Data retention &amp; security</h2>
+  <p>
+    Because we don't operate user accounts, we don't maintain a database of personal user
+    information. Any state, district, or address you enter is used to fulfill your request for
+    representative and map information and is not used to identify you personally.
+  </p>
+
+  <h2><span class="sec">§ 07</span>Your choices</h2>
+  <p>
+    You can use most of Ballotics without providing any personal information. You can decline
+    location or address features and still browse polling, maps, finance, and history.
+  </p>
+
+  <h2><span class="sec">§ 08</span>Changes to this policy</h2>
+  <p>
+    We may update this policy from time to time. We'll revise the "Effective" date above and, for
+    material changes, note them in the app or on this page.
+  </p>
+
+  <h2><span class="sec">§ 09</span>Contact</h2>
+  <p>
+    Questions about this policy or your data? Email
+    <a class="inline" href="mailto:support@ballotics.com">support@ballotics.com</a>.
+  </p>
+</main>
+
+<footer>
+  © 2026 Ballotics · <a href="index.html">Home</a> · <a href="mailto:support@ballotics.com">support@ballotics.com</a>
+</footer>
+
+</body>
+</html>
