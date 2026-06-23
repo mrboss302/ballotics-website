@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ========== PRIMARY SEO ========== -->
+<title>Ballotics — U.S. Election Polls, Electoral Maps & Congress Tracker</title>
+<meta name="description" content="The field guide to American politics. Live polling averages, an interactive 2028 electoral map, campaign finance, county-level results since 1976, and a full Congress tracker — built for people who read past the headlines. Free on iPhone & iPad, coming soon to Android.">
+<meta name="keywords" content="election app, polling averages, electoral college map, 2028 election map, presidential approval, campaign finance, FEC data, Congress tracker, roll call votes, your representatives, Senate 2026, midterm polls, county election results, Ballotics">
+<meta name="author" content="Antwon Key">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0e0d0b">
+<link rel="canonical" href="https://ballotics.com/">
+
+<!-- ========== FAVICON / ICONS ========== -->
+<link rel="icon" type="image/svg+xml" href="/ballotics-icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- ========== OPEN GRAPH ========== -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ballotics">
+<meta property="og:title" content="Ballotics — U.S. Election Polls, Electoral Maps & Congress Tracker">
+<meta property="og:description" content="Live polling averages, an interactive 2028 electoral map, campaign finance, results since 1976, and a full Congress tracker. Non-partisan, ad-free, built from primary sources.">
+<meta property="og:url" content="https://ballotics.com/">
+<meta property="og:image" content="https://ballotics.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ballotics — the field guide to American politics">
+<meta property="og:locale" content="en_US">
+
+<!-- ========== TWITTER CARD ========== -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ballotics — U.S. Election Polls, Electoral Maps & Congress Tracker">
+<meta name="twitter:description" content="The field guide to American politics. Polling, maps, finance, and Congress — published nightly from the primary sources.">
+<meta name="twitter:image" content="https://ballotics.com/og-image.jpg">
+
+<!-- ========== APPLE ========== -->
+<meta name="apple-itunes-app" content="app-id=1524713588">
+
+<!-- ========== STRUCTURED DATA ========== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "Ballotics — Election Data & Map",
+  "operatingSystem": "iOS",
+  "applicationCategory": "ReferenceApplication",
+  "applicationSubCategory": "Politics & Elections",
+  "url": "https://ballotics.com/",
+  "downloadUrl": "https://apps.apple.com/us/app/ballotics-election-data-map/id1524713588",
+  "softwareVersion": "3.0",
+  "author": { "@type": "Person", "name": "Antwon Key" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Live polling averages, an interactive 2028 electoral map, campaign finance, county-level election results since 1976, and a full Congress tracker — assembled nightly from primary sources.",
+  "featureList": [
+    "Presidential approval and generic-ballot polling averages",
+    "Interactive 2028 electoral college map with split-district and 269–269 tie scenarios",
+    "Campaign finance from the FEC",
+    "Presidential and congressional results with county-level drilldown since 1976",
+    "Congress tracker: chamber composition, your delegation, roll-call votes, and sponsored legislation"
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+<style>
+:root {
+  --ink: #0e0d0b;
+  --ink-2: #1a1815;
+  --paper: #f3ede1;
+  --paper-2: #ebe3d3;
+  --parchment: #e4dbc7;
+  --cream: #f7f1e5;
+  --rule: #2a2723;
+  --rule-soft: rgba(14, 13, 11, 0.12);
+  --rule-ghost: rgba(14, 13, 11, 0.06);
+  --muted: #6b6459;
+  --muted-2: #87806f;
+  --crimson: #b33333;
+  --crimson-deep: #861f1f;
+  --navy: #1d3557;
+  --navy-deep: #132944;
+  --ochre: #c08a2e;
+  --moss: #4a6b3a;
+  --accent: #d8493a;
+
+  --serif: "Fraunces", "Times New Roman", serif;
+  --sans: "Inter", -apple-system, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(14, 13, 11, 0.04), transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.05 0 0 0 0 0.04 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: auto, 200px 200px;
+}
+
+::selection { background: var(--ink); color: var(--paper); }
+
+/* ---------- Masthead / Nav ---------- */
+
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  background: rgba(243, 237, 225, 0.92);
+}
+
+.mast-left {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wordmark::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: var(--crimson);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--crimson);
+}
+
+/* Logo lockup image (replaces text wordmark) */
+.wordmark-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 0;
+}
+.wordmark-logo::before { display: none; }
+.wordmark-logo img {
+  height: 30px;
+  width: auto;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+.wordmark-logo:hover img { opacity: 0.78; }
+
+.footer-brand .wordmark-logo img {
+  height: 46px;
+  margin-bottom: 16px;
+  /* render the dark lockup in cream for the dark footer */
+  filter: brightness(0) saturate(100%) invert(93%) sepia(8%) saturate(420%) hue-rotate(2deg) brightness(99%);
+}
+
+.volume {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-left: 1px solid var(--rule-soft);
+  padding-left: 20px;
+}
+
+.nav {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.nav a {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  position: relative;
+  padding: 4px 0;
+}
+
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: 0;
+  height: 1px;
+  background: var(--ink);
+  transition: right 0.3s ease;
+}
+
+.nav a:hover::after { right: 0; }
+
+.download-btn {
+  background: var(--ink);
+  color: var(--paper) !important;
+  padding: 10px 18px !important;
+  border-radius: 999px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.download-btn:hover { background: var(--crimson); transform: translateY(-1px); }
+.download-btn::after { display: none !important; }
+
+/* ---------- Hero ---------- */
+
+.hero {
+  padding: 56px 32px 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 14px;
+  border-bottom: 3px double var(--rule);
+  margin-bottom: 32px;
+}
+
+.hero-top .date {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.hero-top .issue {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
+  align-items: stretch;
+}
+
+.hero-copy {
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--crimson);
+}
+
+.headline {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: 0.94;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+
+.headline em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--crimson-deep);
+}
+
+.headline .small-caps {
+  font-size: 0.55em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  vertical-align: 0.15em;
+  font-style: normal;
+  color: var(--muted);
+  display: inline-block;
+  margin: 0 0.2em;
+}
+
+.deck {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  max-width: 48ch;
+  font-weight: 400;
+  margin-bottom: 36px;
+}
+
+.deck::first-line {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+.cta-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.appstore-btn {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 14px 22px;
+  border-radius: 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.25s ease;
+  border: 1px solid var(--ink);
+}
+
+.appstore-btn:hover {
+  background: var(--crimson);
+  border-color: var(--crimson);
+  transform: translateY(-2px);
+}
+
+.appstore-btn svg { width: 26px; height: 26px; flex-shrink: 0; }
+
+.appstore-btn .ab-small {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  font-family: var(--mono);
+}
+.appstore-btn .ab-big {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+/* Android — coming soon variant */
+.android-btn {
+  background: transparent;
+  color: var(--ink);
+  padding: 14px 22px;
+  border-radius: 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px dashed var(--rule);
+  position: relative;
+  cursor: default;
+  transition: all 0.25s ease;
+}
+
+.android-btn:hover { border-style: solid; background: var(--cream); }
+.android-btn svg { width: 24px; height: 24px; flex-shrink: 0; opacity: 0.85; }
+.android-btn .ab-small {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  font-family: var(--mono);
+}
+.android-btn .ab-big {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.soon-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--ochre);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px var(--paper);
+}
+
+.learn-more {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.learn-more:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.byline {
+  padding-top: 22px;
+  border-top: 1px solid var(--rule-soft);
+  display: flex;
+  gap: 32px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.byline strong {
+  color: var(--ink);
+  font-weight: 600;
+  display: block;
+  margin-top: 4px;
+  font-family: var(--sans);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-size: 13px;
+}
+
+/* ---------- Hero Map ---------- */
+
+.hero-map {
+  position: relative;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 28px 32px 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 1px 0 var(--rule) inset,
+    0 20px 50px -30px rgba(14, 13, 11, 0.3);
+}
+
+.hero-map::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--rule-soft);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule-soft);
+  margin-bottom: 8px;
+}
+
+.map-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.map-title::before {
+  content: "FIG. 01";
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  border: 1px solid var(--rule-soft);
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.map-subtitle {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-subtitle .live-dot {
+  width: 6px; height: 6px;
+  background: var(--crimson);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+#us-map {
+  width: 100%;
+  aspect-ratio: 975 / 610;
+  margin: 8px 0 4px;
+}
+
+#us-map .state {
+  stroke: var(--cream);
+  stroke-width: 0.75;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
+}
+
+#us-map .state:hover {
+  filter: brightness(1.15);
+}
+
+/* Tally bar */
+.tally {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.tally-bar {
+  flex: 1;
+  height: 10px;
+  background: var(--parchment);
+  display: flex;
+  position: relative;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 16px;
+}
+
+.tally-bar .dem { background: var(--navy); height: 100%; }
+.tally-bar .rep { background: var(--crimson); height: 100%; margin-left: auto; }
+.tally-bar .toss { background: var(--ochre); height: 100%; opacity: 0.6; }
+
+.tally-bar::after {
+  content: "";
+  position: absolute;
+  top: -4px; bottom: -4px;
+  left: 50%;
+  width: 1px;
+  background: var(--ink);
+}
+
+.tally-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  min-width: 40px;
+  text-align: center;
+}
+.tally-num.dem { color: var(--navy); }
+.tally-num.rep { color: var(--crimson); }
+
+.tally-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  display: block;
+}
+
+/* ---------- Marquee ticker ---------- */
+
+.ticker {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--ink);
+  color: var(--paper);
+  overflow: hidden;
+  padding: 12px 0;
+  margin-top: 64px;
+  position: relative;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 48px;
+  animation: ticker 50s linear infinite;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ticker-item .t-label { color: var(--muted-2); }
+.ticker-item .t-value { color: var(--paper); font-weight: 600; }
+.ticker-item .t-delta { font-family: var(--mono); }
+.ticker-item .t-delta.up { color: #7fb77e; }
+.ticker-item .t-delta.down { color: #e89090; }
+
+.ticker-item .dot {
+  width: 4px; height: 4px; background: var(--muted-2); border-radius: 50%;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 96px 32px;
+  position: relative;
+}
+
+.section-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 48px;
+}
+
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(32px, 4.5vw, 56px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.section-title em { font-style: italic; color: var(--crimson-deep); font-weight: 500; }
+
+.section-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ---------- Feature columns ---------- */
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0;
+  border-left: 1px solid var(--rule-soft);
+  border-top: 1px solid var(--rule-soft);
+}
+
+.feature {
+  grid-column: span 6;
+  padding: 40px 36px;
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 320px;
+  background: var(--paper);
+  transition: background 0.3s ease;
+}
+
+.feature:hover { background: var(--cream); }
+
+.feature.tall { grid-column: span 4; }
+.feature.wide { grid-column: span 8; }
+
+.feature-num {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.feature-kicker {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--crimson);
+}
+
+.feature-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 32px;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.feature-title em { font-style: italic; }
+
+.feature-body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin-top: auto;
+  max-width: 42ch;
+}
+
+.feature-viz {
+  margin-top: 8px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+}
+
+/* Marker for illustrative (non-live) sample visuals */
+.sample-tag {
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--rule-soft);
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+.bw-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+/* --- Sparkline widget --- */
+.sparkline-card {
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--rule-soft);
+  padding: 18px 20px;
+  border-radius: 4px;
+}
+
+.sparkline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.sparkline-header .sl-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sparkline-header .sl-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+
+.sparkline-header .sl-delta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--crimson);
+}
+
+.sparkline-svg { width: 100%; height: 60px; display: block; }
+
+.sparkline-footer {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* --- Bar widget --- */
+.bars-widget { width: 100%; }
+.bars-widget .bw-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 60px;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dotted var(--rule-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.bar-row .bar-label { color: var(--ink); letter-spacing: 0.03em; }
+.bar-row .bar-track {
+  height: 6px;
+  background: var(--parchment);
+  position: relative;
+  border-radius: 1px;
+}
+.bar-row .bar-fill {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  border-radius: 1px;
+}
+.bar-row .bar-fill.dem { background: var(--navy); }
+.bar-row .bar-fill.rep { background: var(--crimson); }
+.bar-row .bar-value { text-align: right; color: var(--ink); font-weight: 600; }
+
+/* --- Money widget --- */
+.money-widget {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.money-card {
+  background: var(--cream);
+  border: 1px solid var(--rule-soft);
+  padding: 16px;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.money-card .mc-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.money-card .mc-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin: 4px 0;
+}
+.money-card .mc-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-2);
+}
+
+.money-card.dem .mc-value { color: var(--navy); }
+.money-card.rep .mc-value { color: var(--crimson); }
+
+.money-card::before {
+  content: "";
+  position: absolute;
+  right: -10px; bottom: -10px;
+  width: 40px; height: 40px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.1;
+}
+
+/* --- Representative card --- */
+.rep-card {
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--rule-soft);
+  padding: 16px 18px;
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.rep-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--parchment), var(--paper-2));
+  border: 1px solid var(--rule-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.rep-info .rep-name {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.rep-info .rep-role {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.rep-party {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.rep-party.d { background: var(--navy); color: var(--paper); }
+.rep-party.r { background: var(--crimson); color: var(--paper); }
+
+/* ---------- Data philosophy section ---------- */
+
+.philosophy {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 120px 0;
+  margin-top: 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+.philosophy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(179, 51, 51, 0.15), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(29, 53, 87, 0.2), transparent 50%);
+  pointer-events: none;
+}
+
+.philosophy-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.philo-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(243, 237, 225, 0.15);
+  margin-bottom: 56px;
+}
+
+.philo-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(243, 237, 225, 0.5);
+}
+
+.philo-pullquote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(32px, 4.5vw, 64px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  max-width: 18ch;
+  margin-bottom: 48px;
+}
+
+.philo-pullquote::before {
+  content: "\201C";
+  font-size: 2em;
+  line-height: 0;
+  display: inline-block;
+  margin-right: 0.1em;
+  color: var(--crimson);
+  vertical-align: -0.2em;
+}
+
+.philo-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 48px;
+  margin-top: 64px;
+}
+
+.philo-col {
+  border-top: 1px solid rgba(243, 237, 225, 0.2);
+  padding-top: 20px;
+}
+
+.philo-col h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+  color: var(--paper);
+}
+
+.philo-col h3 span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--crimson);
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.philo-col p {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgba(243, 237, 225, 0.75);
+}
+
+/* ---------- Source list ---------- */
+
+.sources {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 96px 32px;
+}
+
+.source-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+
+.source {
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px;
+  background: var(--paper);
+}
+
+.source:hover { background: var(--cream); }
+
+.source-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.source-name {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.source-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: auto;
+}
+
+.source-note {
+  margin-top: 28px;
+  max-width: 90ch;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.source-note a {
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--rule-soft);
+}
+.source-note a:hover { color: var(--crimson); }
+
+/* ---------- Screenshot showcase ---------- */
+
+.showcase {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 96px 32px;
+}
+
+.phone-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  margin-top: 48px;
+}
+
+.phone {
+  aspect-ratio: 9 / 19;
+  background: var(--ink);
+  border-radius: 36px;
+  padding: 8px;
+  position: relative;
+  box-shadow:
+    0 20px 60px -20px rgba(14, 13, 11, 0.4),
+    inset 0 0 0 1px rgba(243, 237, 225, 0.1);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.phone:hover { transform: translateY(-8px) rotate(-1deg); }
+.phone:nth-child(2) { transform: translateY(-20px); }
+.phone:nth-child(2):hover { transform: translateY(-28px) rotate(0.5deg); }
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: var(--paper);
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 22px;
+  background: var(--ink);
+  border-radius: 0 0 14px 14px;
+  z-index: 2;
+}
+
+.phone-header {
+  padding: 36px 16px 12px;
+  border-bottom: 1px solid var(--rule-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.phone-header .ph-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.phone-header .ph-date {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.phone-body {
+  flex: 1;
+  padding: 14px;
+  overflow: hidden;
+}
+
+/* Phone 1: Approval */
+.phone-approve {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 12px 0 2px;
+}
+.phone-approve-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.phone-chart-svg {
+  width: 100%;
+  height: 120px;
+  margin: 16px 0;
+}
+.phone-legend {
+  display: flex;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+.phone-legend .lg-item { display: flex; align-items: center; gap: 6px; }
+.phone-legend .lg-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+
+/* Phone 2: Map */
+.phone-map-svg {
+  width: 100%;
+  aspect-ratio: 975 / 610;
+  margin-top: 10px;
+}
+.phone-map-svg .state {
+  stroke: var(--paper);
+  stroke-width: 0.5;
+}
+.phone-map-tally {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.phone-tally-cell {
+  padding: 10px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--paper);
+}
+.phone-tally-cell.dem { background: var(--navy); }
+.phone-tally-cell.rep { background: var(--crimson); }
+.phone-tally-cell strong {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 22px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Phone 3: Race list */
+.phone-race {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+.phone-race:last-child { border-bottom: none; }
+.phone-race-name {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 13px;
+}
+.phone-race-loc {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.phone-race-margin {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+}
+.phone-race-margin .m-party {
+  font-size: 9px;
+  color: var(--muted);
+  display: block;
+  font-weight: 400;
+}
+.phone-race-margin.d { color: var(--navy); }
+.phone-race-margin.r { color: var(--crimson); }
+
+.phone-caption {
+  text-align: center;
+  margin-top: 20px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Final CTA ---------- */
+
+.final-cta {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 120px 32px;
+  text-align: center;
+  position: relative;
+}
+
+.final-cta::before,
+.final-cta::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 1px;
+  background: var(--rule);
+}
+.final-cta::before { top: 40px; }
+.final-cta::after { bottom: 40px; }
+
+.final-kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  margin-bottom: 24px;
+}
+
+.final-headline {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(44px, 6.5vw, 88px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  max-width: 16ch;
+  margin: 0 auto 28px;
+}
+
+.final-headline em {
+  font-style: italic;
+  color: var(--crimson-deep);
+  font-weight: 500;
+}
+
+.final-sub {
+  font-family: var(--serif);
+  font-size: 19px;
+  color: var(--ink-2);
+  max-width: 54ch;
+  margin: 0 auto 40px;
+  line-height: 1.5;
+}
+
+/* ---------- Footer ---------- */
+
+footer {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 64px 32px 40px;
+  margin-top: 0;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(243, 237, 225, 0.15);
+}
+
+.footer-brand .wordmark {
+  color: var(--paper);
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.footer-brand .wordmark::before {
+  box-shadow: 0 0 0 3px var(--ink), 0 0 0 4px var(--crimson);
+}
+
+.footer-tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: rgba(243, 237, 225, 0.65);
+  max-width: 32ch;
+  line-height: 1.5;
+}
+
+.footer-col h4 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(243, 237, 225, 0.5);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 10px; }
+.footer-col a {
+  color: rgba(243, 237, 225, 0.85);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+.footer-col a:hover { color: var(--crimson); }
+
+.colophon {
+  max-width: 1400px;
+  margin: 24px auto 0;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(243, 237, 225, 0.4);
+}
+
+.colophon a { color: rgba(243, 237, 225, 0.6); text-decoration: none; }
+.colophon a:hover { color: var(--crimson); }
+
+/* ---------- Animations ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered item reveals (features, sources, phones) */
+.r-item {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+              transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.r-item.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Bar/track fills grow when scrolled into view */
+.bar-fill, .tally-bar > div {
+  transition: width 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .r-item { opacity: 1 !important; transform: none !important; }
+  .ticker-track { animation: none !important; }
+}
+
+.hero-copy > * {
+  animation: fadeUp 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+.hero-copy > *:nth-child(1) { animation-delay: 0.05s; }
+.hero-copy > *:nth-child(2) { animation-delay: 0.15s; }
+.hero-copy > *:nth-child(3) { animation-delay: 0.25s; }
+.hero-copy > *:nth-child(4) { animation-delay: 0.35s; }
+.hero-copy > *:nth-child(5) { animation-delay: 0.45s; }
+
+.hero-map {
+  animation: fadeUp 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s backwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .feature, .feature.tall, .feature.wide { grid-column: span 12; }
+  .philo-columns { grid-template-columns: 1fr; gap: 32px; }
+  .source-grid { grid-template-columns: repeat(2, 1fr); }
+  .phone-grid { grid-template-columns: 1fr; gap: 32px; max-width: 320px; margin: 48px auto 0; }
+  .phone:nth-child(2) { transform: none; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+@media (max-width: 640px) {
+  .masthead { padding: 12px 20px; gap: 12px; }
+  .volume { display: none; }
+  .nav { gap: 16px; }
+  .nav a:not(.download-btn) { display: none; }
+  .hero { padding: 32px 20px 0; }
+  .section { padding: 64px 20px; }
+  .section-head { grid-template-columns: 1fr; gap: 8px; }
+  .section-meta { text-align: left; }
+  .sources { padding: 64px 20px; }
+  .source-grid { grid-template-columns: 1fr; }
+  .showcase { padding: 64px 20px; }
+  .philosophy { padding: 80px 0; }
+  .philosophy-inner { padding: 0 20px; }
+  .final-cta { padding: 80px 20px; }
+  .byline { flex-direction: column; gap: 16px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+  .colophon { flex-direction: column; gap: 8px; }
+  .hero-top { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .feature { padding: 32px 24px; min-height: 280px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MASTHEAD ========== -->
+<header class="masthead">
+  <div class="mast-left">
+    <a href="#" class="wordmark-logo" aria-label="Ballotics — home">
+      <img src="/ballotics-logo.svg" alt="Ballotics" width="370" height="187">
+    </a>
+    <span class="volume">Vol. II · No. 07 · Est. 2020</span>
+  </div>
+  <nav class="nav">
+    <a href="#features">Features</a>
+    <a href="#data">Data</a>
+    <a href="#showcase">Inside</a>
+    <a href="https://apps.apple.com/us/app/ballotics-election-data-map/id1524713588" class="download-btn">Get the App →</a>
+  </nav>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-top">
+    <span class="date" id="today-date">SUNDAY, APRIL 19, 2026</span>
+    <span class="issue">The field guide to American politics</span>
+  </div>
+
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="kicker">Election Intelligence · iOS</span>
+
+      <h1 class="headline">
+        Read the <em>numbers</em>, <span class="small-caps">not</span> the noise.
+      </h1>
+
+      <p class="deck">
+        Ballotics is a serious instrument for a serious subject: polling averages, an interactive electoral map, campaign finance, and a full Congress tracker — assembled nightly, wired to the people who actually do the counting.
+      </p>
+
+      <div class="cta-row">
+        <a href="https://apps.apple.com/us/app/ballotics-election-data-map/id1524713588" class="appstore-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+          <span>
+            <span class="ab-small">Download on the</span>
+            <span class="ab-big">App Store</span>
+          </span>
+        </a>
+        <span class="android-btn" role="note" aria-label="Android app coming soon">
+          <span class="soon-badge">Coming Soon</span>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.86 3.23a11.4 11.4 0 0 0-9.78 0L5.25 5.9a.4.4 0 1 0-.69.4L6.4 9.48A10.8 10.8 0 0 0 1 18.5h22a10.8 10.8 0 0 0-5.4-9.02zM7 15.25a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2zm10 0a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2z"/>
+          </svg>
+          <span>
+            <span class="ab-small">Soon on</span>
+            <span class="ab-big">Google Play</span>
+          </span>
+        </span>
+        <a href="#features" class="learn-more">See what's inside →</a>
+      </div>
+
+      <div class="byline">
+        <div>
+          <span>Built by</span>
+          <strong>Antwon Key</strong>
+        </div>
+        <div>
+          <span>Data from</span>
+          <strong>NYT · FEC · MIT · Congress.gov</strong>
+        </div>
+        <div>
+          <span>Platform</span>
+          <strong>iPhone · iPad · Android soon</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO MAP -->
+    <div class="hero-map">
+      <div class="map-header">
+        <div class="map-title">2026 Senate — Ratings Outlook</div>
+        <div class="map-subtitle">Illustrative</div>
+      </div>
+
+      <svg id="us-map" viewBox="0 0 975 610" preserveAspectRatio="xMidYMid meet" aria-label="US Senate outlook map">
+        <g id="states-layer"></g>
+      </svg>
+
+      <div class="tally">
+        <div>
+          <div class="tally-num dem">47</div>
+          <div class="tally-label">Dem</div>
+        </div>
+        <div class="tally-bar" aria-hidden="true">
+          <div class="dem" style="width: 47%"></div>
+          <div class="toss" style="width: 6%"></div>
+          <div class="rep" style="width: 47%"></div>
+        </div>
+        <div>
+          <div class="tally-num rep">47</div>
+          <div class="tally-label">Rep</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TICKER ========== -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <!-- One set of items; the script clones it for a seamless loop. -->
+    <div class="ticker-item"><span class="t-label">Trump Approval</span><span class="t-value js-approve">38.1%</span><span class="t-delta down js-approve-delta">−0.5</span></div>
+    <span class="dot"></span>
+    <div class="ticker-item"><span class="t-label">Trump Disapproval</span><span class="t-value js-disapprove">58.2%</span></div>
+    <span class="dot"></span>
+    <div class="ticker-item"><span class="t-label">2024 Electoral Vote</span><span class="t-value">Trump 312 · Harris 226</span></div>
+    <span class="dot"></span>
+    <div class="ticker-item"><span class="t-label">Senate · 119th</span><span class="t-value">53 R · 47 D</span></div>
+    <span class="dot"></span>
+    <div class="ticker-item"><span class="t-label">House · 119th</span><span class="t-value">220 R · 215 D</span></div>
+    <span class="dot"></span>
+    <div class="ticker-item"><span class="t-label">Presidential elections</span><span class="t-value">1788 – 2024</span></div>
+    <span class="dot"></span>
+    <div class="ticker-item"><span class="t-label">County results</span><span class="t-value">2000 – 2024</span></div>
+    <span class="dot"></span>
+  </div>
+</div>
+
+<!-- ========== FEATURES ========== -->
+<section class="section reveal" id="features">
+  <div class="section-head">
+    <div class="section-num">§ 01</div>
+    <h2 class="section-title">Everything you need <em>in one pocket.</em></h2>
+    <div class="section-meta">Six instruments<br>One app</div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature">
+      <span class="feature-num">01</span>
+      <span class="feature-kicker">Polling</span>
+      <h3 class="feature-title">Presidential <em>approval</em>, tracked daily.</h3>
+      <div class="feature-viz">
+        <div class="sparkline-card">
+          <div class="sparkline-header">
+            <span class="sl-title">Trump approval avg.</span>
+            <span class="sl-value js-approve">38.1%</span>
+            <span class="sl-delta js-approve-delta">−0.5</span>
+          </div>
+          <svg class="sparkline-svg" id="approve-spark" viewBox="0 0 300 60" preserveAspectRatio="none">
+            <path id="approve-spark-line" d="" fill="none" stroke="#b33333" stroke-width="1.5"/>
+            <path id="approve-spark-fill" d="" fill="#b33333" fill-opacity="0.08"/>
+            <line x1="0" y1="58" x2="300" y2="58" stroke="rgba(14,13,11,0.12)"/>
+          </svg>
+          <div class="sparkline-footer">
+            <span>OVER TIME</span>
+            <span class="js-approve-asof">MAY 2026</span>
+          </div>
+        </div>
+      </div>
+      <p class="feature-body">The New York Times' presidential approval average, refreshed nightly, with the individual polls behind every point — plus generic-ballot, Senate, and Governor polling for the 2026 cycle.</p>
+    </div>
+
+    <div class="feature">
+      <span class="feature-num">02</span>
+      <span class="feature-kicker">2028 Electoral Map</span>
+      <h3 class="feature-title">Build <em>scenarios</em>, state by state.</h3>
+      <div class="feature-viz">
+        <div class="bars-widget">
+          <div class="bw-title">Custom Path to 270 <span class="sample-tag">Sample</span></div>
+          <div class="bar-row">
+            <span class="bar-label">Pennsylvania</span>
+            <div class="bar-track"><div class="bar-fill dem" style="width: 52%"></div></div>
+            <span class="bar-value">D +4</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Michigan</span>
+            <div class="bar-track"><div class="bar-fill dem" style="width: 51%"></div></div>
+            <span class="bar-value">D +2</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Wisconsin</span>
+            <div class="bar-track"><div class="bar-fill dem" style="width: 50.5%"></div></div>
+            <span class="bar-value">D +1</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Arizona</span>
+            <div class="bar-track"><div class="bar-fill rep" style="width: 51%"></div></div>
+            <span class="bar-value">R +2</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Georgia</span>
+            <div class="bar-track"><div class="bar-fill rep" style="width: 52%"></div></div>
+            <span class="bar-value">R +3</span>
+          </div>
+        </div>
+      </div>
+      <p class="feature-body">Tap any state to color the 2028 map and watch the count to 270. Maine and Nebraska split districts are handled correctly — and build a 269–269 tie and Ballotics walks you through the contingent election in the House. Save and reload as many scenarios as you like.</p>
+    </div>
+
+    <div class="feature">
+      <span class="feature-num">03</span>
+      <span class="feature-kicker">Campaign Finance</span>
+      <h3 class="feature-title">Follow the <em>money</em>, in real time.</h3>
+      <div class="feature-viz">
+        <div style="width: 100%;">
+          <div class="bw-title">Cash on Hand <span class="sample-tag">Sample</span></div>
+          <div class="money-widget">
+            <div class="money-card dem">
+              <div class="mc-label">Dem · Cash on Hand</div>
+              <div class="mc-value">$412M</div>
+              <div class="mc-sub">+18% QoQ</div>
+            </div>
+            <div class="money-card rep">
+              <div class="mc-label">Rep · Cash on Hand</div>
+              <div class="mc-value">$389M</div>
+              <div class="mc-sub">+12% QoQ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="feature-body">Campaign finance straight from the FEC, joined to each race: receipts, disbursements, and cash on hand for every candidate on the ballot.</p>
+    </div>
+
+    <div class="feature">
+      <span class="feature-num">04</span>
+      <span class="feature-kicker">Congress Tracker</span>
+      <h3 class="feature-title">Know who <em>represents</em> you.</h3>
+      <div class="feature-viz">
+        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+          <div class="rep-card">
+            <div class="rep-avatar">BS</div>
+            <div class="rep-info">
+              <div class="rep-name">Sen. Bernie Sanders</div>
+              <div class="rep-role">Senate · Vermont</div>
+            </div>
+            <div class="rep-party d">D</div>
+          </div>
+          <div class="rep-card">
+            <div class="rep-avatar">AO</div>
+            <div class="rep-info">
+              <div class="rep-name">Rep. Alexandria Ocasio-Cortez</div>
+              <div class="rep-role">House · NY-14</div>
+            </div>
+            <div class="rep-party d">D</div>
+          </div>
+        </div>
+      </div>
+      <p class="feature-body">See live chamber composition as a seat chart or map, pull up your federal delegation by state, and open any member for their bio, sponsored legislation, and voting record on every recent roll call.</p>
+    </div>
+
+    <div class="feature">
+      <span class="feature-num">05</span>
+      <span class="feature-kicker">Midterm Races</span>
+      <h3 class="feature-title">Senate, <em>House</em>, Governor.</h3>
+      <div class="feature-viz">
+        <div class="bars-widget">
+          <div class="bw-title">Battleground Senate · 2026 <span class="sample-tag">Sample</span></div>
+          <div class="bar-row">
+            <span class="bar-label">Ohio</span>
+            <div class="bar-track"><div class="bar-fill rep" style="width: 53%"></div></div>
+            <span class="bar-value">R +4.2</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Maine</span>
+            <div class="bar-track"><div class="bar-fill dem" style="width: 51%"></div></div>
+            <span class="bar-value">D +1.8</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">N. Carolina</span>
+            <div class="bar-track"><div class="bar-fill rep" style="width: 50.5%"></div></div>
+            <span class="bar-value">R +1.1</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Iowa</span>
+            <div class="bar-track"><div class="bar-fill rep" style="width: 52%"></div></div>
+            <span class="bar-value">R +3.4</span>
+          </div>
+        </div>
+      </div>
+      <p class="feature-body">Heat maps, seat projections, and polling averages for every competitive Senate, House, and gubernatorial race on the calendar.</p>
+    </div>
+
+    <div class="feature">
+      <span class="feature-num">06</span>
+      <span class="feature-kicker">History</span>
+      <h3 class="feature-title">Every election, <em>since 1788.</em></h3>
+      <div class="feature-viz">
+        <div style="width: 100%; display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px;">
+          <!-- Mini historical election bars -->
+          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1976"></div>
+          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1980"></div>
+          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1984"></div>
+          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="1988"></div>
+          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1992"></div>
+          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="1996"></div>
+          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2000"></div>
+          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2004"></div>
+          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2008"></div>
+          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2012"></div>
+          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2016"></div>
+          <div style="background: var(--navy); height: 40px; border-radius: 1px;" title="2020"></div>
+          <div style="background: var(--crimson); height: 40px; border-radius: 1px;" title="2024"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; width: 100%; margin-top: 8px; font-family: var(--mono); font-size: 8px; color: var(--muted); text-align: center;">
+          <span>'76</span><span>'80</span><span>'84</span><span>'88</span><span>'92</span><span>'96</span><span>'00</span><span>'04</span><span>'08</span><span>'12</span><span>'16</span><span>'20</span><span>'24</span>
+        </div>
+      </div>
+      <p class="feature-body">Every U.S. presidential election from 1788 to 2024 — drillable to the state and, for 2000–2024, the county level, with Census Bureau demographics for every county you open. (Recent cycles shown above.)</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PHILOSOPHY ========== -->
+<section class="philosophy" id="data">
+  <div class="philosophy-inner">
+    <div class="philo-head">
+      <span class="philo-label">§ 02 · On Method</span>
+      <span class="philo-label">Non-partisan · Ad-free · Owner-operated</span>
+    </div>
+
+    <p class="philo-pullquote">
+      We don't make the news. We organize it into something you can actually read.
+    </p>
+
+    <div class="philo-columns">
+      <div class="philo-col">
+        <h3><span>Principle I</span>Sources over summaries.</h3>
+        <p>Every number in Ballotics is traceable to a primary source — a polling firm, a federal filing, an election office. You see who said what, when, and by how much.</p>
+      </div>
+      <div class="philo-col">
+        <h3><span>Principle II</span>No lectures. No takes.</h3>
+        <p>Ballotics shows you the data and trusts you to read it. No editorial, no opinion columns, no partisan framing — just the instruments professionals use, in a form you can hold.</p>
+      </div>
+      <div class="philo-col">
+        <h3><span>Principle III</span>Built to last.</h3>
+        <p>A cycle is four years. An app should be, too. Ballotics is actively developed by one person and designed to outlive any single election — because American politics doesn't take off-years.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SOURCES ========== -->
+<section class="sources reveal">
+  <div class="section-head">
+    <div class="section-num">§ 03</div>
+    <h2 class="section-title">Where the <em>numbers</em> come from.</h2>
+    <div class="section-meta">Primary sources<br>Only</div>
+  </div>
+
+  <div class="source-grid">
+    <div class="source">
+      <span class="source-num">S / 01</span>
+      <div class="source-name">The New York Times</div>
+      <div class="source-desc">Presidential approval averages and 2026 Senate &amp; Governor polls, refreshed nightly. Data © The New York Times, used under CC BY 4.0.</div>
+    </div>
+    <div class="source">
+      <span class="source-num">S / 02</span>
+      <div class="source-name">Federal Election Commission</div>
+      <div class="source-desc">Campaign finance — receipts, disbursements, and cash on hand for every federal candidate.</div>
+    </div>
+    <div class="source">
+      <span class="source-num">S / 03</span>
+      <div class="source-name">MIT Election Data & Science Lab</div>
+      <div class="source-desc">Presidential returns back to 1788 and congressional returns, drillable to county level (2000–2024).</div>
+    </div>
+    <div class="source">
+      <span class="source-num">S / 04</span>
+      <div class="source-name">U.S. Congress (Congress.gov)</div>
+      <div class="source-desc">Members, chamber composition, roll-call votes, and sponsored legislation, refreshed nightly.</div>
+    </div>
+    <div class="source">
+      <span class="source-num">S / 05</span>
+      <div class="source-name">U.S. Census Bureau</div>
+      <div class="source-desc">County-level demographics paired with election returns for context on every result.</div>
+    </div>
+    <div class="source">
+      <span class="source-num">S / 06</span>
+      <div class="source-name">Harvard Dataverse</div>
+      <div class="source-desc">Curated datasets for House and Senate results, county-level returns, and district maps.</div>
+    </div>
+  </div>
+
+  <p class="source-note">
+    Polling averages and data sets produced by The New York Times are used under the
+    <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">Creative Commons Attribution 4.0 International</a>
+    license. Averages are produced by The Times; polls collected by The Times, with historical data from the Roper Center and FiveThirtyEight.
+    Campaign-finance and demographic figures come from the FEC and U.S. Census Bureau APIs. Data is offered as-is, without warranty.
+    To report a possible error in a polling average, contact <a href="mailto:polls@nytimes.com">polls@nytimes.com</a>.
+  </p>
+</section>
+
+<!-- ========== SHOWCASE ========== -->
+<section class="showcase reveal" id="showcase">
+  <div class="section-head">
+    <div class="section-num">§ 04</div>
+    <h2 class="section-title">A tour of <em>the instrument.</em></h2>
+    <div class="section-meta">Native iOS<br>SwiftUI</div>
+  </div>
+
+  <div class="phone-grid">
+    <!-- Phone 1: Approval -->
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <span class="ph-title">Approval</span>
+          <span class="ph-date js-approve-date">MAY '26</span>
+        </div>
+        <div class="phone-body">
+          <div class="phone-approve-label">Trump · approval avg.</div>
+          <div class="phone-approve js-approve">38.1%</div>
+          <svg class="phone-chart-svg" viewBox="0 0 240 120" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="approveGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#b33333" stop-opacity="0.3"/>
+                <stop offset="1" stop-color="#b33333" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="disapproveGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#1d3557" stop-opacity="0.25"/>
+                <stop offset="1" stop-color="#1d3557" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="60" x2="240" y2="60" stroke="rgba(14,13,11,0.12)" stroke-dasharray="2,3"/>
+            <path id="phone-disapprove-line" d="" fill="none" stroke="#1d3557" stroke-width="1.5"/>
+            <path id="phone-disapprove-fill" d="" fill="url(#disapproveGrad)"/>
+            <path id="phone-approve-line" d="" fill="none" stroke="#b33333" stroke-width="1.5"/>
+            <path id="phone-approve-fill" d="" fill="url(#approveGrad)"/>
+            <circle id="phone-approve-dot" cx="240" cy="82" r="3" fill="#b33333"/>
+            <circle id="phone-disapprove-dot" cx="240" cy="24" r="3" fill="#1d3557"/>
+          </svg>
+          <div class="phone-legend">
+            <div class="lg-item"><span class="lg-dot" style="background: var(--crimson)"></span>Approve</div>
+            <div class="lg-item"><span class="lg-dot" style="background: var(--navy)"></span>Disapprove</div>
+          </div>
+          <div style="margin-top: 16px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase;">
+            Source: The New York Times
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 2: Map -->
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <span class="ph-title">2024 Election</span>
+          <span class="ph-date">FINAL</span>
+        </div>
+        <div class="phone-body">
+          <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-top: 4px;">Electoral College</div>
+          <svg class="phone-map-svg" id="phone-map" viewBox="0 0 975 610" preserveAspectRatio="xMidYMid meet">
+            <g id="phone-states-layer"></g>
+          </svg>
+          <div class="phone-map-tally">
+            <div class="phone-tally-cell dem">
+              <strong>226</strong>
+              HARRIS · D
+            </div>
+            <div class="phone-tally-cell rep">
+              <strong>312</strong>
+              TRUMP · R
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 3: Races -->
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <span class="ph-title">Senate '26</span>
+          <span class="ph-date">OUTLOOK</span>
+        </div>
+        <div class="phone-body">
+          <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin: 4px 0 10px;">Battleground · Sorted by Margin</div>
+          <div class="phone-race">
+            <div>
+              <div class="phone-race-name">Pennsylvania</div>
+              <div class="phone-race-loc">McCormick vs. Fetterman</div>
+            </div>
+            <div class="phone-race-margin d">+2.1<span class="m-party">D lead</span></div>
+          </div>
+          <div class="phone-race">
+            <div>
+              <div class="phone-race-name">Ohio</div>
+              <div class="phone-race-loc">Moreno vs. Ryan</div>
+            </div>
+            <div class="phone-race-margin r">+4.2<span class="m-party">R lead</span></div>
+          </div>
+          <div class="phone-race">
+            <div>
+              <div class="phone-race-name">Maine</div>
+              <div class="phone-race-loc">Collins vs. Mills</div>
+            </div>
+            <div class="phone-race-margin d">+1.8<span class="m-party">D lead</span></div>
+          </div>
+          <div class="phone-race">
+            <div>
+              <div class="phone-race-name">N. Carolina</div>
+              <div class="phone-race-loc">Budd vs. Cooper</div>
+            </div>
+            <div class="phone-race-margin r">+1.1<span class="m-party">R lead</span></div>
+          </div>
+          <div class="phone-race">
+            <div>
+              <div class="phone-race-name">Iowa</div>
+              <div class="phone-race-loc">Ernst vs. Franken</div>
+            </div>
+            <div class="phone-race-margin r">+3.4<span class="m-party">R lead</span></div>
+          </div>
+          <div class="phone-race">
+            <div>
+              <div class="phone-race-name">Georgia</div>
+              <div class="phone-race-loc">Ossoff vs. Kemp</div>
+            </div>
+            <div class="phone-race-margin d">+0.4<span class="m-party">D lead</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="phone-caption">Approval tracking · Interactive electoral map · Battleground race polling</p>
+</section>
+
+<!-- ========== FINAL CTA ========== -->
+<section class="final-cta" id="download">
+  <div class="final-kicker">An Ongoing Publication</div>
+  <h2 class="final-headline">American politics, <em>legibly.</em></h2>
+  <p class="final-sub">Ballotics is free, non-partisan, and ad-free — no account required. Available now on iPhone and iPad, with Android on the way.</p>
+  <div class="cta-row" style="justify-content: center;">
+    <a href="https://apps.apple.com/us/app/ballotics-election-data-map/id1524713588" class="appstore-btn">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+      </svg>
+      <span>
+        <span class="ab-small">Download on the</span>
+        <span class="ab-big">App Store</span>
+      </span>
+    </a>
+    <span class="android-btn" role="note" aria-label="Android app coming soon">
+      <span class="soon-badge">Coming Soon</span>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.86 3.23a11.4 11.4 0 0 0-9.78 0L5.25 5.9a.4.4 0 1 0-.69.4L6.4 9.48A10.8 10.8 0 0 0 1 18.5h22a10.8 10.8 0 0 0-5.4-9.02zM7 15.25a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2zm10 0a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2z"/>
+      </svg>
+      <span>
+        <span class="ab-small">Soon on</span>
+        <span class="ab-big">Google Play</span>
+      </span>
+    </span>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="wordmark-logo" aria-label="Ballotics — home">
+        <img src="/ballotics-logo.svg" alt="Ballotics" width="370" height="187">
+      </a>
+      <p class="footer-tagline">The field guide to American politics. Polling, maps, finance, and Congress — published nightly from the primary sources.</p>
+    </div>
+    <div class="footer-col">
+      <h4>The App</h4>
+      <ul>
+        <li><a href="https://apps.apple.com/us/app/ballotics-election-data-map/id1524713588">Download for iOS</a></li>
+        <li><a href="#download">Android (coming soon)</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#data">Data sources</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:support@ballotics.com">support@ballotics.com</a></li>
+        <li><a href="#data">Data &amp; methodology</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="colophon">
+    <span>© 2026 Ballotics · Built by Antwon Key · Made in the United States</span>
+    <span>Polling data © The New York Times, <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">CC BY 4.0</a> · Updated nightly</span>
+  </div>
+</footer>
+
+<script>
+/* ---------- Date in masthead ---------- */
+(function() {
+  const el = document.getElementById('today-date');
+  if (!el) return;
+  const d = new Date();
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  el.textContent = d.toLocaleDateString('en-US', opts).toUpperCase();
+})();
+
+/* ---------- Reveal on scroll ---------- */
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ---------- Staggered item reveals ---------- */
+(function staggerReveals() {
+  if (prefersReduced) return;
+  const groups = ['.features-grid', '.source-grid', '.phone-grid'];
+  const itemSel = { '.features-grid': '.feature', '.source-grid': '.source', '.phone-grid': '.phone' };
+  groups.forEach(groupSel => {
+    const group = document.querySelector(groupSel);
+    if (!group) return;
+    const items = group.querySelectorAll(itemSel[groupSel]);
+    items.forEach(item => item.classList.add('r-item'));
+    const obs = new IntersectionObserver((entries, o) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const idx = [...items].indexOf(entry.target);
+        entry.target.style.transitionDelay = Math.min(idx, 6) * 90 + 'ms';
+        entry.target.classList.add('in-view');
+        o.unobserve(entry.target);
+      });
+    }, { threshold: 0.15 });
+    items.forEach(item => obs.observe(item));
+  });
+})();
+
+/* ---------- Count-up for numeric figures ---------- */
+(function countUps() {
+  const targets = document.querySelectorAll(
+    '.tally-num, .phone-approve, .sl-value, .mc-value, .phone-tally-cell strong'
+  );
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const animate = (el) => {
+    const raw = el.textContent.trim();
+    const m = raw.match(/^([^\d-]*)(-?[\d,]+(?:\.\d+)?)(.*)$/);
+    if (!m) return;
+    const [, prefix, numStr, suffix] = m;
+    const end = parseFloat(numStr.replace(/,/g, ''));
+    const decimals = (numStr.split('.')[1] || '').length;
+    if (prefersReduced || isNaN(end)) { el.textContent = raw; return; }
+    const dur = 1100, start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / dur, 1);
+      const val = (end * ease(p)).toFixed(decimals);
+      const shown = decimals ? val : Math.round(val).toLocaleString();
+      el.textContent = prefix + shown + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const obs = new IntersectionObserver((entries, o) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      animate(entry.target);
+      o.unobserve(entry.target);
+    });
+  }, { threshold: 0.5 });
+  targets.forEach(t => obs.observe(t));
+})();
+
+/* ---------- Live approval data (data/polls.json) ---------- */
+(function approvalData() {
+  // Seeded fallback so the charts always render even if the fetch fails.
+  // The GitHub Action refreshes data/polls.json nightly from the NYT average.
+  const FALLBACK = {
+    approve: 38.1, disapprove: 58.2, delta30: -0.5, asOf: "2026-05-29",
+    approveTrend: [51.8,49.6,48.2,47.5,45.1,44.4,45.6,43.9,44.1,43.7,43.5,43.4,42.5,42.7,41.3,42.2,42,41.1,40.2,40.9,39.9,39.9,38.4,38.1],
+    disapproveTrend: [43,45.9,47.7,49.5,50.9,51.5,50.4,53.1,52.2,52.7,52.7,53,53.7,54.1,55.7,54.6,53.8,55.2,56,56,56.3,55.7,58.2,58.2]
+  };
+
+  const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const setText = (sel, txt) => document.querySelectorAll(sel).forEach(el => { el.textContent = txt; });
+
+  // Build an SVG line + matching fill path from a series, given a shared domain.
+  function paths(values, w, h, padTop, padBottom, min, max) {
+    const n = values.length;
+    const range = (max - min) || 1;
+    const pts = values.map((v, i) => {
+      const x = n === 1 ? w : (i / (n - 1)) * w;
+      const y = padTop + (1 - (v - min) / range) * (h - padTop - padBottom);
+      return [+x.toFixed(2), +y.toFixed(2)];
+    });
+    const line = "M" + pts.map(p => p.join(",")).join(" L");
+    const fill = line + ` L${w},${h} L0,${h} Z`;
+    return { line, fill, last: pts[pts.length - 1] };
+  }
+
+  function render(a) {
+    const downDelta = a.delta30 <= 0;
+    setText(".js-approve", a.approve + "%");
+    setText(".js-disapprove", a.disapprove + "%");
+    setText(".js-approve-delta", (downDelta ? "−" : "+") + Math.abs(a.delta30));
+    document.querySelectorAll(".js-approve-delta").forEach(el => {
+      el.classList.toggle("down", downDelta);
+      el.classList.toggle("up", !downDelta);
+    });
+
+    // Date labels
+    const d = new Date(a.asOf + "T00:00:00");
+    if (!isNaN(d)) {
+      setText(".js-approve-asof", MONTHS[d.getMonth()] + " " + d.getFullYear());
+      setText(".js-approve-date", MONTHS[d.getMonth()] + " '" + String(d.getFullYear()).slice(2));
+    }
+
+    // Feature sparkline (approval only)
+    const fMin = Math.min(...a.approveTrend), fMax = Math.max(...a.approveTrend);
+    const fp = paths(a.approveTrend, 300, 60, 6, 8, fMin, fMax);
+    const sLine = document.getElementById("approve-spark-line");
+    const sFill = document.getElementById("approve-spark-fill");
+    if (sLine) sLine.setAttribute("d", fp.line);
+    if (sFill) sFill.setAttribute("d", fp.fill);
+
+    // Phone chart (approve + disapprove share a domain)
+    const all = a.approveTrend.concat(a.disapproveTrend);
+    const pMin = Math.min(...all), pMax = Math.max(...all);
+    const ap = paths(a.approveTrend, 240, 120, 10, 10, pMin, pMax);
+    const dp = paths(a.disapproveTrend, 240, 120, 10, 10, pMin, pMax);
+    const set = (id, attr, val) => { const el = document.getElementById(id); if (el) el.setAttribute(attr, val); };
+    set("phone-approve-line", "d", ap.line);
+    set("phone-approve-fill", "d", ap.fill);
+    set("phone-disapprove-line", "d", dp.line);
+    set("phone-disapprove-fill", "d", dp.fill);
+    set("phone-approve-dot", "cy", ap.last[1]);
+    set("phone-disapprove-dot", "cy", dp.last[1]);
+  }
+
+  render(FALLBACK);
+  fetch("data/polls.json", { cache: "no-cache" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(d => { if (d && d.approval) render(d.approval); })
+    .catch(() => { /* keep fallback */ });
+})();
+
+/* ---------- Ticker: clone once for a seamless loop ---------- */
+(function tickerLoop() {
+  if (prefersReduced) return;
+  const track = document.getElementById("ticker-track");
+  if (!track) return;
+  track.innerHTML += track.innerHTML;
+})();
+
+/* ---------- US Map rendering ---------- */
+// Senate 2026 outlook coloring
+const senateOutlook = {
+  // Safe Dem
+  "06": "safeD", "09": "safeD", "10": "safeD", "11": "safeD", "15": "safeD",
+  "24": "safeD", "25": "safeD", "33": "safeD", "34": "safeD", "36": "safeD",
+  "41": "safeD", "44": "safeD", "50": "safeD", "53": "safeD",
+  // Likely/Lean Dem
+  "17": "leanD", "23": "leanD", "26": "leanD", "27": "leanD", "32": "leanD",
+  "42": "leanD", "55": "leanD", "08": "leanD",
+  // Tossup
+  "04": "tossup", "13": "tossup", "37": "tossup", "12": "tossup", "39": "tossup",
+  // Lean/Likely Rep
+  "18": "leanR", "19": "leanR", "29": "leanR", "40": "leanR", "47": "leanR",
+  // Safe Rep
+  "01": "safeR", "02": "safeR", "05": "safeR", "16": "safeR", "20": "safeR",
+  "21": "safeR", "22": "safeR", "28": "safeR", "30": "safeR", "31": "safeR",
+  "35": "safeR", "38": "safeR", "45": "safeR", "46": "safeR", "48": "safeR",
+  "49": "safeR", "51": "safeR", "54": "safeR", "56": "safeR"
+};
+
+const outlookColors = {
+  safeD:  "#1d3557",
+  leanD:  "#5b7ca0",
+  tossup: "#c08a2e",
+  leanR:  "#c06666",
+  safeR:  "#b33333",
+  none:   "#d6ccb6"
+};
+
+// 2024 presidential results by state FIPS (approximate, for showcase)
+const pres2024 = {
+  "01": "R", "02": "R", "04": "R", "05": "R", "06": "D", "08": "D", "09": "D",
+  "10": "D", "11": "D", "12": "R", "13": "R", "15": "D", "16": "R", "17": "D",
+  "18": "R", "19": "R", "20": "R", "21": "R", "22": "R", "23": "D", "24": "D",
+  "25": "D", "26": "R", "27": "D", "28": "R", "29": "R", "30": "R", "31": "R",
+  "32": "R", "33": "D", "34": "D", "35": "D", "36": "D", "37": "R", "38": "R",
+  "39": "R", "40": "R", "41": "D", "42": "R", "44": "D", "45": "R", "46": "R",
+  "47": "R", "48": "R", "49": "R", "50": "D", "51": "D", "53": "D", "54": "R",
+  "55": "D", "56": "R"
+};
+
+(async function renderMaps() {
+  try {
+    const res = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json');
+    const topology = await res.json();
+    const path = d3.geoPath();
+    const statesFeature = topojson.feature(topology, topology.objects.states);
+    const meshInterior = topojson.mesh(topology, topology.objects.states, (a, b) => a !== b);
+
+    // ===== Hero map (Senate 2026) =====
+    const heroLayer = d3.select('#states-layer');
+    heroLayer.selectAll('path.state')
+      .data(statesFeature.features)
+      .enter()
+      .append('path')
+      .attr('class', 'state')
+      .attr('d', path)
+      .attr('fill', d => outlookColors[senateOutlook[d.id] || 'none'])
+      .attr('opacity', d => {
+        const status = senateOutlook[d.id];
+        if (!status) return 0.35;
+        return 1;
+      });
+
+    heroLayer.append('path')
+      .attr('d', path(meshInterior))
+      .attr('fill', 'none')
+      .attr('stroke', '#f7f1e5')
+      .attr('stroke-width', 0.75)
+      .attr('stroke-linejoin', 'round');
+
+    // ===== Phone map (2024 results) =====
+    const phoneLayer = d3.select('#phone-states-layer');
+    phoneLayer.selectAll('path.state')
+      .data(statesFeature.features)
+      .enter()
+      .append('path')
+      .attr('class', 'state')
+      .attr('d', path)
+      .attr('fill', d => {
+        const r = pres2024[d.id];
+        if (r === 'D') return '#1d3557';
+        if (r === 'R') return '#b33333';
+        return '#e4dbc7';
+      });
+
+    phoneLayer.append('path')
+      .attr('d', path(meshInterior))
+      .attr('fill', 'none')
+      .attr('stroke', '#f3ede1')
+      .attr('stroke-width', 0.6)
+      .attr('stroke-linejoin', 'round');
+
+  } catch (err) {
+    console.warn('Map load failed, showing fallback', err);
+    const fallback = (sel, label) => {
+      const svg = document.querySelector(sel);
+      if (!svg) return;
+      svg.innerHTML = `<rect width="975" height="610" fill="#e4dbc7"/>
+        <text x="487" y="305" text-anchor="middle" font-family="Fraunces, serif"
+          font-size="24" fill="#6b6459">${label}</text>`;
+    };
+    fallback('#us-map', 'Map unavailable');
+    fallback('#phone-map', 'Map');
+  }
+})();
+</script>
+</body>
+</html>

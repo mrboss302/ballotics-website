@@ -1,0 +1,46 @@
+name: Update data
+
+# Refreshes data/polls.json from primary sources (NYT polling averages, and
+# optionally FEC / Census via secrets) and commits any changes. GitHub Pages
+# redeploys automatically when the committed files change.
+
+on:
+  schedule:
+    - cron: "20 9 * * *" # daily, ~5:20am ET / 9:20 UTC
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch latest data
+        env:
+          # Add these as repository secrets to enable finance/demographics.
+          FEC_API_KEY: ${{ secrets.FEC_API_KEY }}
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+        run: node scripts/update-data.mjs
+
+      - name: Commit changes
+        run: |
+          if [[ -n "$(git status --porcelain data/)" ]]; then
+            git config user.name "ballotics-data-bot"
+            git config user.email "actions@github.com"
+            git add data/
+            git commit -m "data: refresh polling averages ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "No data changes to commit."
+          fi
