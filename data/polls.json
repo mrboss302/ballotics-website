@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-28",
+  "updated": "2026-06-29",
   "approval": {
     "subject": "Trump",
     "approve": 38.1,
@@ -61,7 +61,7 @@
   },
   "finance": {
     "cycle": 2026,
-    "asOf": "2026-06-28",
+    "asOf": "2026-06-29",
     "dem": {
       "cashOnHand": 126706030.78,
       "receipts": 507618167.28
